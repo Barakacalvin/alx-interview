@@ -1,0 +1,75 @@
+#!/usr/bin/python3
+"""Prime numbers count solution using sieve of eratosthenes"""
+import math
+
+
+def is_prime(n):
+    """
+    Function that checks if a number is a prime
+
+    Args: n(int) - checked if  is a prime
+    Returns: True if prime else False
+    """
+    if n < 2:
+        return False
+    for i in range(2, int(math.sqrt(n)) + 1):
+        if n % i == 0:
+            return False
+    return True
+
+
+def generate_prime(n):
+    """
+    Function that generates a list of prime numbers
+
+    Args: n(int)
+
+    Returns: list of prime numbers
+    """
+    primes = []
+    for num in range(2, n + 1):
+        if is_prime(num):
+            primes.append(num)
+    return primes
+
+
+def isWinner(x, nums):
+    """
+    Function that determines winning player based on prime values
+
+    Args: x(int) - number of rounds each player has
+          nums(int) - an array of n
+
+    Returns: Name of winner that won most rounds
+             - if winner cannot be determined returns False
+    """
+    maria_wins = 0
+    ben_wins = 0
+
+    for n in nums:
+        primes = generate_prime(n)
+        numbers = set(range(1, n + 1))
+        current_player = "Maria"
+
+        while primes:
+            for prime in primes:
+                multiples = set(range(prime, n + 1, prime))
+                numbers -= multiples
+                if not multiples.intersection(numbers):
+                    break
+            else:
+                break
+
+            current_player = "Ben" if current_player == "Maria" else "Maria"
+
+        if current_player == "Maria":
+            maria_wins += 1
+        else:
+            ben_wins += 1
+
+    if maria_wins > ben_wins:
+        return "Maria"
+    elif maria_wins < ben_wins:
+        return "Ben"
+    else:
+        return False
